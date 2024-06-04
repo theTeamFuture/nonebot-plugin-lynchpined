@@ -26,7 +26,7 @@ nb plugin install nonebot-plugin-lynchpined
 pip install nonebot-plugin-lynchpined
 ```
 
-and then adding following content in the `pyproject.toml`:
+and then adding package name in the following field of `pyproject.toml`:
 
 ```toml
 [tool.nonebot]
@@ -49,7 +49,7 @@ Pattern Matched:
 
 ## Subscribe to Lynchpin Progress
 
-Adding `lynchpined_user` or `lynchpined_group` in config, the plugin will send lynchpin progress to the lynchpined at 00:00 everyday.
+By adding `lynchpined_user` or `lynchpined_group` in config, the plugin will send lynchpin progress to the lynchpined at 00:00 everyday.
 
 For example: 
 
