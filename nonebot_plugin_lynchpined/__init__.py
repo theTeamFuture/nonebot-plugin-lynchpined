@@ -20,7 +20,7 @@ __plugin_meta__ = PluginMetadata(
     config=Config,
 )
 
-config = Config.parse_obj(get_driver().config)
+config = get_plugin_config(Config)
 
 LYNCHPIN_DEST = "https://ak.hypergryph.com/lynchpin/api/meta"
 
