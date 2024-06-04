@@ -3,7 +3,7 @@ from nonebot import get_plugin_config, require, on_command, get_bot, get_driver,
 from nonebot.plugin import PluginMetadata
 
 from .config import Config
-from requests import get, HTTPError
+import aiohttp
 import time
 
 require("nonebot_plugin_apscheduler")
@@ -27,22 +27,23 @@ LYNCHPIN_DEST = "https://ak.hypergryph.com/lynchpin/api/meta"
 PATTERN = [0,4,12,15,24,33,34,35,35]
 EPOCH = 1715529600
 
-def get_progress()->int:
-    response = get(LYNCHPIN_DEST)
-    if response.status_code == 200:
-        result = response.json()
-        return result['data']['progress']
-    else:
-        raise HTTPError
-
 def get_expected_progress(timestamp)->Tuple[int,int]:
     sec_diff = timestamp - EPOCH
     days = sec_diff // 86400
     days_in_period = days % len(PATTERN)
     return PATTERN[days_in_period], days_in_period
 
-def get_msg()->str:
-    progress = get_progress()
+async def get_progress()->int:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(LYNCHPIN_DEST) as response:
+            if response.status == 200:
+                result = await response.json()
+                return result['data']['progress']
+            else:
+                raise aiohttp.ClientResponseError(response.status, response.url, response.headers)
+
+async def get_msg()->str:
+    progress = await get_progress()
     t = int(time.time())
     expected_progress, days_in_period = get_expected_progress(t)
     comparison = 'Matched' if progress == expected_progress else 'UNMATCHED'
@@ -56,15 +57,15 @@ GET_LYNCHPINED = on_command("lynchpin", priority=10, block=True)
 @GET_LYNCHPINED.handle()
 async def show_progress(event, state):
     try:
-        msg = get_msg()
+        msg = await get_msg()
         await GET_LYNCHPINED.send(msg)
-    except HTTPError:
-        await GET_LYNCHPINED.send('Lynchpin: HTTPError')
+    except aiohttp.ClientResponseError:
+        await GET_LYNCHPINED.send('Lynchpin: Error fetching data.')
 
 
 async def run_everyday():
     bot = get_bot()
-    msg = get_msg()
+    msg = await get_msg()
     for group_id in config.lynchpined_group:
         await bot.send_group_msg(group_id=group_id, message=msg)
     
@@ -74,8 +75,6 @@ async def run_everyday():
     logger.info('Daily Lynchpin completed.')
 
     
-
-
 scheduler.add_job(func=run_everyday,trigger="cron",second=3,minute=0,hour=0,id="lynchpin_subscribe")
 
 
