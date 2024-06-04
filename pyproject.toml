@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-lynchpined"
-version = "0.1.1"
+version = "0.1.2"
 description = "A nonebot2 plugin to check Lynchpin progress."
 authors = ["Nightsky <050644zf@outlook.com>"]
 license = "MIT"
