@@ -17,7 +17,6 @@ __plugin_meta__ = PluginMetadata(
     usage="Get Lynchpin progress by sending 'lynchpin' command. Subscribe to daily Lynchpin progress by adding `lynchpined_user` or `lynchpined_group` in config",
     type="application",
     homepage="https://github.com/theTeamFuture/nonebot-plugin-lynchpined",
-    supported_adapters={"~onebot.v11"},
     config=Config,
 )
 
