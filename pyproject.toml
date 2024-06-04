@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "nonebot-plugin-lynchpined"
+version = "0.1.0"
+description = "A nonebot2 plugin to check Lynchpin progress."
+authors = ["Nightsky <050644zf@outlook.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "nonebot_plugin_lynchpined"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+requests = "^2.32.3"
+nonebot-plugin-apscheduler = "^0.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
